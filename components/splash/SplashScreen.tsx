@@ -46,7 +46,7 @@ export default function SplashScreen() {
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.8, duration: 0.5 }}
         >
-          Finovate<span className="text-accent">X</span>
+          Finova<span className="text-accent">X</span>
         </motion.h1>
         
         <motion.p

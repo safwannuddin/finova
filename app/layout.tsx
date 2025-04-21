@@ -16,7 +16,7 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: 'FinovateX - Your Personalized Wealth Hub',
+  title: 'Finova - Your Personalized Wealth Hub',
   description: 'AI-powered financial portfolio management',
 };
 
