@@ -40,7 +40,7 @@ export default function Header({ user }: HeaderProps) {
           <div className="flex items-center">
             <Logo size="small" />
             <span className="ml-2 text-xl font-bold">
-              Finova<span className="text-accent">X</span>
+              Fino<span className="text-accent">VA</span>
             </span>
           </div>
           
