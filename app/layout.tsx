@@ -4,6 +4,7 @@ import { Inter, DM_Sans } from 'next/font/google'
 import { ClerkProvider } from '@clerk/nextjs'
 import { UserProvider } from '@/context/UserContext'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
+import AnimationProvider from '@/components/providers/AnimationProvider'
 import { Toaster } from '@/components/ui/toaster'
 
 const inter = Inter({
@@ -26,8 +27,32 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  // Skip Clerk in development if publishable key is not valid
+  const clerkPubKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
+  const useClerk = clerkPubKey && !clerkPubKey.includes('your_clerk_publishable_key');
+
   return (
-    <ClerkProvider>
+    useClerk ? (
+      <ClerkProvider>
+        <html lang="en" suppressHydrationWarning>
+          <body className={`${inter.variable} ${dmSans.variable} font-sans bg-background`}>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="dark"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <UserProvider>
+                <AnimationProvider>
+                  {children}
+                  <Toaster />
+                </AnimationProvider>
+              </UserProvider>
+            </ThemeProvider>
+          </body>
+        </html>
+      </ClerkProvider>
+    ) : (
       <html lang="en" suppressHydrationWarning>
         <body className={`${inter.variable} ${dmSans.variable} font-sans bg-background`}>
           <ThemeProvider
@@ -37,12 +62,14 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <UserProvider>
-              {children}
-              <Toaster />
+              <AnimationProvider>
+                {children}
+                <Toaster />
+              </AnimationProvider>
             </UserProvider>
           </ThemeProvider>
         </body>
       </html>
-    </ClerkProvider>
+    )
   )
 }

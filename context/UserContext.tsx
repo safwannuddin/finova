@@ -52,6 +52,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [onboardingComplete, setOnboardingComplete] = useState(false);
 
   const updateUser = (userData: Partial<User>) => {
+    console.log("Updating user data:", userData);
     setUser((prevUser) => {
       if (!prevUser) return { ...initialUser, ...userData };
       return { ...prevUser, ...userData };
@@ -59,10 +60,13 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const completeOnboarding = () => {
+    console.log("Setting onboardingComplete to true");
     setOnboardingComplete(true);
+    console.log("onboardingComplete should now be true");
   };
 
   const resetOnboarding = () => {
+    console.log("Resetting onboarding");
     setUser(initialUser);
     setOnboardingComplete(false);
   };

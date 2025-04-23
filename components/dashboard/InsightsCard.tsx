@@ -1,88 +1,204 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Insight } from '@/lib/mockData';
-import { Sparkles, AlertTriangle, Lightbulb } from 'lucide-react';
+import { useUser } from '@/context/UserContext';
+import { generatePersonalizedInsights } from '@/lib/openai';
+import { Lightbulb, AlertTriangle, TrendingUp, ChevronLeft, ChevronRight, Sparkles, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Insight } from '@/lib/mockData';
 
 interface InsightsCardProps {
   insights: Insight[];
 }
 
-export default function InsightsCard({ insights }: InsightsCardProps) {
-  const getInsightIcon = (type: string) => {
-    switch (type) {
-      case 'opportunity':
-        return <Sparkles className="h-5 w-5 text-primary" />;
-      case 'warning':
-        return <AlertTriangle className="h-5 w-5 text-orange-500" />;
-      case 'tip':
-        return <Lightbulb className="h-5 w-5 text-amber-500" />;
-      default:
-        return <Lightbulb className="h-5 w-5 text-muted-foreground" />;
+export default function InsightsCard({ insights: initialInsights }: InsightsCardProps) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [insights, setInsights] = useState<Insight[]>(initialInsights);
+  const [loading, setLoading] = useState(false);
+  const [aiInsightsAvailable, setAiInsightsAvailable] = useState(false);
+  const { user } = useUser();
+
+  useEffect(() => {
+    // Check if we can potentially generate AI insights
+    if (user && process.env.NEXT_PUBLIC_OPENAI_API_KEY) {
+      setAiInsightsAvailable(true);
     }
+  }, [user]);
+
+  const goToNext = () => {
+    setCurrentIndex((prev) => (prev + 1) % insights.length);
   };
-  
-  const getInsightClass = (type: string) => {
-    switch (type) {
-      case 'opportunity':
-        return 'border-primary/30 bg-primary/5';
-      case 'warning':
-        return 'border-orange-500/30 bg-orange-500/5';
-      case 'tip':
-        return 'border-amber-500/30 bg-amber-500/5';
-      default:
-        return 'border-muted bg-muted/10';
+
+  const goToPrevious = () => {
+    setCurrentIndex((prev) => (prev - 1 + insights.length) % insights.length);
+  };
+
+  const generateAiInsights = async () => {
+    if (!user) return;
+    
+    setLoading(true);
+    try {
+      const aiInsights = await generatePersonalizedInsights(user);
+      if (aiInsights && aiInsights.length > 0) {
+        // If we successfully get AI insights, use them
+        setInsights(aiInsights);
+        setCurrentIndex(0);
+      }
+    } catch (error) {
+      console.error('Error generating AI insights:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
+  const getInsightIcon = (type: string) => {
+    switch (type) {
+      case 'opportunity':
+        return <TrendingUp size={16} className="text-green-500" />;
+      case 'warning':
+        return <AlertTriangle size={16} className="text-amber-500" />;
+      case 'tip':
+      default:
+        return <Lightbulb size={16} className="text-blue-500" />;
+    }
+  };
+  
+  const getInsightColor = (type: string) => {
+    switch (type) {
+      case 'opportunity':
+        return 'bg-green-500/10 text-green-500 border-green-500/20';
+      case 'warning':
+        return 'bg-amber-500/10 text-amber-500 border-amber-500/20';
+      case 'tip':
+      default:
+        return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
+    }
+  };
+
+  const getImpactBadge = (impact: string) => {
+    switch (impact) {
+      case 'high':
+        return <Badge variant="secondary" className="bg-red-500/10 text-red-500 hover:bg-red-500/20 hover:text-red-500">High Impact</Badge>;
+      case 'medium':
+        return <Badge variant="secondary" className="bg-amber-500/10 text-amber-500 hover:bg-amber-500/20 hover:text-amber-500">Medium Impact</Badge>;
+      case 'low':
+      default:
+        return <Badge variant="secondary" className="bg-green-500/10 text-green-500 hover:bg-green-500/20 hover:text-green-500">Low Impact</Badge>;
+    }
+  };
+
+  // Animation variants
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+  };
+
+  const currentInsight = insights[currentIndex];
+
   return (
-    <Card className="overflow-hidden glass-card h-full">
-      <CardHeader className="pb-3">
-        <div className="flex items-center">
-          <Sparkles className="h-5 w-5 text-primary mr-2" />
-          <div>
-            <CardTitle className="text-xl">AI Insights</CardTitle>
-            <CardDescription>Personalized financial recommendations</CardDescription>
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          {insights.map((insight, index) => (
-            <motion.div
-              key={insight.id}
-              className={`p-4 rounded-lg border ${getInsightClass(insight.type)}`}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.2, duration: 0.5 }}
-            >
-              <div className="flex">
-                <div className="mr-3 mt-0.5">
-                  {getInsightIcon(insight.type)}
-                </div>
-                <div className="space-y-1">
-                  <h4 className="font-medium text-sm">{insight.title}</h4>
-                  <p className="text-sm text-muted-foreground">
-                    {insight.description}
-                  </p>
-                </div>
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      variants={cardVariants}
+    >
+      <Card className="h-full overflow-hidden glass-card">
+        <CardHeader className="pb-3 space-y-1.5">
+          <div className="flex justify-between items-center">
+            <CardTitle className="text-xl flex items-center">
+              Insights
+              <div className="ml-2">
+                <motion.div
+                  initial={{ rotate: 0 }}
+                  animate={{ rotate: loading ? 360 : 0 }}
+                  transition={{ duration: 2, repeat: loading ? Infinity : 0, ease: "linear" }}
+                >
+                  <Sparkles size={16} className="text-primary" />
+                </motion.div>
               </div>
+            </CardTitle>
+            {aiInsightsAvailable && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="px-2 h-8 text-xs flex items-center gap-1"
+                onClick={generateAiInsights}
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <Loader2 size={14} className="animate-spin mr-1" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles size={14} className="mr-1" />
+                    Refresh with AI
+                  </>
+                )}
+              </Button>
+            )}
+          </div>
+          <CardDescription>
+            Personalized financial insights for your profile
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <motion.div
+              key={currentIndex}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3 }}
+              className="min-h-[12rem]"
+            >
+              {currentInsight && (
+                <>
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className={`p-1.5 rounded ${getInsightColor(currentInsight.type)}`}>
+                      {getInsightIcon(currentInsight.type)}
+                    </div>
+                    <h3 className="font-medium">{currentInsight.title}</h3>
+                  </div>
+                  
+                  <p className="text-sm text-muted-foreground mb-3">{currentInsight.description}</p>
+                  
+                  <div className="flex justify-between items-center">
+                    {getImpactBadge(currentInsight.impact)}
+                    <div className="text-xs text-muted-foreground">
+                      {currentIndex + 1} of {insights.length}
+                    </div>
+                  </div>
+                </>
+              )}
             </motion.div>
-          ))}
-          
-          <motion.div
-            className="flex justify-center items-center pt-2"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: insights.length * 0.2 + 0.2, duration: 0.5 }}
-          >
-            <button className="text-sm text-primary hover:text-primary/80 transition-colors">
-              See more insights
-            </button>
-          </motion.div>
-        </div>
-      </CardContent>
-    </Card>
+            
+            <div className="flex justify-between">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                onClick={goToPrevious}
+                disabled={insights.length <= 1}
+              >
+                <ChevronLeft size={16} />
+              </Button>
+              <Button
+                variant="ghost" 
+                size="icon"
+                className="h-8 w-8"
+                onClick={goToNext}
+                disabled={insights.length <= 1}
+              >
+                <ChevronRight size={16} />
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 }
