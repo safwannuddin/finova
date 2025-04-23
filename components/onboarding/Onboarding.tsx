@@ -6,9 +6,11 @@ import { useUser, User } from '@/context/UserContext';
 import PersonalInfoStep from '@/components/onboarding/steps/PersonalInfoStep';
 import FinancialInfoStep from '@/components/onboarding/steps/FinancialInfoStep';
 import InvestmentInfoStep from '@/components/onboarding/steps/InvestmentInfoStep';
+import ExperienceStep from '@/components/onboarding/steps/ExperienceStep';
+import GoalsStep from '@/components/onboarding/steps/GoalsStep';
 import ParticleBackground from '@/components/ui/ParticleBackground';
 import { Badge } from '@/components/ui/badge';
-import { Check, User as UserIcon, DollarSign, LineChart } from 'lucide-react';
+import { Check, User as UserIcon, DollarSign, LineChart, Target, BookOpen } from 'lucide-react';
 
 const steps = [
   { 
@@ -20,10 +22,24 @@ const steps = [
   },
   { 
     id: 'financial', 
-    title: 'Financial Overview',
+    title: 'Financial Status',
     description: 'Your income and budget',
     icon: <DollarSign size={18} />,
     color: 'bg-green-500'
+  },
+  {
+    id: 'experience',
+    title: 'Experience Level',
+    description: 'Your financial knowledge',
+    icon: <BookOpen size={18} />,
+    color: 'bg-amber-500'
+  },
+  {
+    id: 'goals',
+    title: 'Financial Goals',
+    description: 'What you want to achieve',
+    icon: <Target size={18} />,
+    color: 'bg-indigo-500'
   },
   { 
     id: 'investment', 
@@ -65,17 +81,31 @@ export default function Onboarding() {
     }
   };
   
-  const handlePersonalInfoSubmit = (data: Pick<User, 'name' | 'age'>) => {
+  const handlePersonalInfoSubmit = (data: Partial<User>) => {
+    console.log("Personal info submitted:", data);
     updateUser(data);
     goToNextStep();
   };
   
-  const handleFinancialInfoSubmit = (data: Pick<User, 'monthlyIncome' | 'budgetAllocation'>) => {
+  const handleFinancialInfoSubmit = (data: Partial<User>) => {
+    console.log("Financial info submitted:", data);
     updateUser(data);
     goToNextStep();
   };
   
-  const handleInvestmentInfoSubmit = (data: Pick<User, 'riskAppetite' | 'investments'>) => {
+  const handleExperienceSubmit = (data: Partial<User>) => {
+    console.log("Experience info submitted:", data);
+    updateUser(data);
+    goToNextStep();
+  };
+  
+  const handleGoalsSubmit = (data: Partial<User>) => {
+    console.log("Goals info submitted:", data);
+    updateUser(data);
+    goToNextStep();
+  };
+  
+  const handleInvestmentInfoSubmit = (data: Partial<User>) => {
     console.log("Investment info submitted to Onboarding component:", data);
     
     // Update user data
@@ -209,6 +239,20 @@ export default function Onboarding() {
                   />
                 )}
                 {currentStep === 2 && (
+                  <ExperienceStep 
+                    key="experience" 
+                    onSubmit={handleExperienceSubmit}
+                    onBack={goToPreviousStep}
+                  />
+                )}
+                {currentStep === 3 && (
+                  <GoalsStep 
+                    key="goals" 
+                    onSubmit={handleGoalsSubmit}
+                    onBack={goToPreviousStep}
+                  />
+                )}
+                {currentStep === 4 && (
                   <InvestmentInfoStep 
                     key="investment" 
                     onSubmit={handleInvestmentInfoSubmit}

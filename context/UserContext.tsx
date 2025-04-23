@@ -4,18 +4,46 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 export type Investment = 'Stocks' | 'Bonds' | 'Crypto' | 'RealEstate' | 'MutualFunds' | 'ETFs';
 export type RiskProfile = 'Low' | 'Medium' | 'High';
+export type ExperienceLevel = 'Beginner' | 'Intermediate' | 'Advanced';
+export type FinancialGoal = 'Retirement' | 'HomePurchase' | 'Education' | 'DebtFreedom' | 'EmergencyFund' | 'Vacation' | 'StartBusiness';
+export type TimeHorizon = 'ShortTerm' | 'MediumTerm' | 'LongTerm';
+export type IncomeStability = 'Stable' | 'Variable' | 'Growing' | 'Declining';
 
 export interface User {
+  // Personal Information
   name: string;
   age: number;
+  occupation?: string;
+  
+  // Financial Status
   monthlyIncome: number;
+  debtAmount?: number;
+  creditScore?: number;
+  incomeStability?: IncomeStability;
+  
+  // Budget Allocation
   budgetAllocation: {
     necessities: number;
     wants: number;
     savings: number;
   };
+  
+  // Investment Profile
   riskAppetite: RiskProfile;
+  experienceLevel?: ExperienceLevel;
   investments: Investment[];
+  preferredInvestmentAmount?: number;
+  
+  // Financial Goals
+  primaryGoals?: FinancialGoal[];
+  goalTimeHorizons?: {
+    [key in FinancialGoal]?: TimeHorizon;
+  };
+  retirementAge?: number;
+  
+  // Learning Preferences
+  interestedTopics?: string[];
+  preferredLearningStyle?: 'Visual' | 'Reading' | 'Interactive';
 }
 
 interface UserContextProps {
@@ -37,6 +65,9 @@ const initialUser: User = {
   },
   riskAppetite: 'Medium',
   investments: [],
+  experienceLevel: 'Beginner',
+  primaryGoals: ['EmergencyFund'],
+  interestedTopics: ['Budgeting', 'Investing']
 };
 
 const UserContext = createContext<UserContextProps>({
