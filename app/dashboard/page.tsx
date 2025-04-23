@@ -1,6 +1,6 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import Header from "@/components/dashboard/Header";
+import Dashboard from "@/components/dashboard/Dashboard";
 
 export default async function DashboardPage() {
   try {
@@ -12,15 +12,12 @@ export default async function DashboardPage() {
       redirect("/sign-in");
     }
   
+    // Get the current user
     const user = await currentUser();
     
     return (
-      <div>
-        <Header />
-        <main className="container mx-auto px-4 py-8">
-          <h1 className="text-3xl font-bold mb-6">Welcome, {user?.firstName || "User"}!</h1>
-          {/* Dashboard content */}
-        </main>
+      <div className="min-h-screen bg-background">
+        <Dashboard />
       </div>
     );
   } catch (error) {
