@@ -1,30 +1,42 @@
-import { NextResponse } from 'next/server';
-import { clerkMiddleware } from '@clerk/nextjs/server';
-import { NextRequest } from 'next/server';
+import { authMiddleware } from "@clerk/nextjs";
 
-// This example protects all routes including api/trpc routes
-// Please edit this to allow other routes to be public as needed.
-// See https://clerk.com/docs/references/nextjs/auth-middleware for more information about configuring your middleware
-export default clerkMiddleware({
-  // Allow access to public routes even when not signed in
+/**
+ * This middleware protects all routes including api/trpc routes
+ * See https://clerk.com/docs/references/nextjs/auth-middleware for more information about configuring your middleware
+ */
+export default authMiddleware({
   publicRoutes: [
     "/",
     "/sign-in(.*)",
     "/sign-up(.*)",
-    "/onboarding(.*)",
+    "/api/webhook(.*)",
+    "/((?!.*\\..*|_next).*)",
+    "/(api|trpc)(.*)",
+    "/api/openai(.*)",
+    "/_next/static/(.)*",
+    "/favicon.ico",
+    "/images/(.*)"
+  ],
+  ignoredRoutes: [
+    "/api/openai(.*)",
     "/api/webhook(.*)"
   ],
-  
-  // For development, allow dashboard access without authentication
-  afterAuth(auth: { userId: string | null; isPublicRoute: boolean }, req: NextRequest) {
-    // If in development and trying to access protected route, allow it
-    if (process.env.NODE_ENV === 'development' && !auth.userId && !auth.isPublicRoute) {
-      console.log("Development mode: Bypassing auth for protected route:", req.nextUrl.pathname);
-      return;
+  afterAuth(auth, req, evt) {
+    // Handle users who aren't authenticated
+    if (!auth.userId && !auth.isPublicRoute) {
+      const signInUrl = new URL('/sign-in', req.url);
+      signInUrl.searchParams.set('redirect_url', req.url);
+      return Response.redirect(signInUrl);
+    }
+
+    // If the user is signed in and trying to access the home page,
+    // redirect them to the dashboard
+    if (auth.userId && req.url === new URL('/', req.url).toString()) {
+      return Response.redirect(new URL('/dashboard', req.url));
     }
   }
 });
 
 export const config = {
-  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
+  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
 };

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useUser } from '@/context/UserContext';
 import { generateInvestmentRecommendations } from '@/lib/openai';
@@ -39,13 +39,7 @@ export default function InvestmentRecommendations() {
   const [expanded, setExpanded] = useState<string | null>(null);
   const { user } = useUser();
 
-  useEffect(() => {
-    if (user && process.env.NEXT_PUBLIC_OPENAI_API_KEY) {
-      generateRecommendations();
-    }
-  }, [user]);
-
-  const generateRecommendations = async () => {
+  const generateRecommendations = useCallback(async () => {
     if (!user) return;
     
     setLoading(true);
@@ -87,7 +81,13 @@ export default function InvestmentRecommendations() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (user && process.env.NEXT_PUBLIC_OPENAI_API_KEY) {
+      generateRecommendations();
+    }
+  }, [user, generateRecommendations]);
 
   const toggleExpand = (id: string) => {
     if (expanded === id) {
