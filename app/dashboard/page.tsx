@@ -1,5 +1,5 @@
-'use client';
-
+import { auth } from "@clerk/nextjs";
+import { redirect } from "next/navigation";
 import Dashboard from "@/components/dashboard/Dashboard";
 import { AdvancedCharts } from "@/components/dashboard/AdvancedCharts";
 import { GoalsProgressCard } from "@/components/dashboard/GoalsProgressCard";
@@ -13,7 +13,14 @@ import { PieChart, LineChart, BarChart3, TrendingUp } from "lucide-react";
 import ChatbotButton from "@/components/ai/ChatbotButton";
 import PortfolioAllocationCard from "@/components/dashboard/PortfolioAllocationCard";
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  // Check if user is authenticated
+  const { userId } = await auth();
+  
+  // If not authenticated, redirect to sign in
+  if (!userId) {
+    redirect("/sign-in");
+  }
   // Mock data for demonstration
   const mockHealthMetrics = [
     {
