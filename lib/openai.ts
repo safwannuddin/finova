@@ -1,82 +1,114 @@
 export const categories = [
-  "Portfolio",
-  "Investments",
-  "Risk Profile",
-  "Savings",
-  "Goals",
-  "Financial Health"
+  "Investment Strategy",
+  "Portfolio Analysis",
+  "Risk Management",
+  "Market Insights",
+  "Financial Planning",
+  "Tax Strategy"
 ];
 
-export interface ChatQuestion {
+interface ChatQuestion {
   id: string;
   category: string;
   question: string;
-  answer: string;
 }
 
 export const chatQuestions: ChatQuestion[] = [
   {
-    id: "portfolio-1",
-    category: "Portfolio",
-    question: "How should I diversify my investment portfolio?",
-    answer: "A well-diversified portfolio typically includes a mix of different asset classes: stocks (40-60%), bonds (20-40%), and alternative investments (0-20%). The exact allocation depends on your risk tolerance and investment timeline. Consider geographic diversification and different sectors to reduce risk."
+    id: "1",
+    category: "Investment Strategy",
+    question: "How should I diversify my investment portfolio?"
   },
   {
-    id: "portfolio-2",
-    category: "Portfolio",
-    question: "What's a good portfolio rebalancing strategy?",
-    answer: "Regular portfolio rebalancing (every 6-12 months) helps maintain your target asset allocation. If any asset class deviates by more than 5% from your target, consider rebalancing. This helps manage risk and can improve long-term returns through disciplined buying and selling."
+    id: "2",
+    category: "Investment Strategy",
+    question: "What are the best long-term investment options?"
   },
   {
-    id: "investments-1",
-    category: "Investments",
-    question: "Should I invest in individual stocks or ETFs?",
-    answer: "For most investors, ETFs offer better diversification and lower risk than individual stocks. They provide exposure to many companies, sectors, or markets with lower costs and less research required. However, if you have the time and knowledge for research, a combination of both can be beneficial."
+    id: "3",
+    category: "Portfolio Analysis",
+    question: "How is my current portfolio performing?"
   },
   {
-    id: "risk-1",
-    category: "Risk Profile",
-    question: "How do I determine my risk tolerance?",
-    answer: "Your risk tolerance depends on factors like your investment timeline, financial goals, and comfort with market volatility. Consider: How long until you need the money? How much loss can you handle without panic selling? Generally, younger investors can take more risk as they have time to recover from market downturns."
+    id: "4",
+    category: "Portfolio Analysis",
+    question: "What is my portfolio's risk level?"
   },
   {
-    id: "savings-1",
-    category: "Savings",
-    question: "How much should I keep in my emergency fund?",
-    answer: "A general rule is to maintain 3-6 months of living expenses in easily accessible savings. If your income is variable or you have dependents, consider saving 6-12 months. Keep this money in a high-yield savings account for both safety and some interest earnings."
+    id: "5",
+    category: "Risk Management",
+    question: "How can I reduce my investment risk?"
   },
   {
-    id: "goals-1",
-    category: "Goals",
-    question: "How do I set realistic financial goals?",
-    answer: "Use the SMART framework: Specific, Measurable, Achievable, Relevant, and Time-bound. For example, instead of 'save more money,' set a goal like 'save $6,000 for emergency fund in 12 months by setting aside $500 monthly.' Break larger goals into smaller milestones and track progress regularly."
+    id: "6",
+    category: "Risk Management",
+    question: "What hedging strategies should I consider?"
   },
   {
-    id: "health-1",
-    category: "Financial Health",
-    question: "What are key financial health indicators to track?",
-    answer: "Monitor these key metrics: 1) Debt-to-income ratio (should be under 36%), 2) Emergency fund coverage (3-6 months), 3) Retirement savings rate (aim for 15-20% of income), 4) Credit score (target 740+), and 5) Net worth growth. Review these monthly or quarterly to stay on track."
+    id: "7",
+    category: "Market Insights",
+    question: "What are the current market trends?"
+  },
+  {
+    id: "8",
+    category: "Market Insights",
+    question: "How might economic changes affect my investments?"
+  },
+  {
+    id: "9",
+    category: "Financial Planning",
+    question: "How can I plan for retirement?"
+  },
+  {
+    id: "10",
+    category: "Financial Planning",
+    question: "What should my savings goals be?"
+  },
+  {
+    id: "11",
+    category: "Tax Strategy",
+    question: "How can I optimize my tax efficiency?"
+  },
+  {
+    id: "12",
+    category: "Tax Strategy",
+    question: "What tax-advantaged accounts should I use?"
   }
 ];
 
-/**
- * Get questions by category
- * @param category Category to filter by
- * @returns Array of questions for the category
- */
-export function getQuestionsByCategory(category: string): ChatQuestion[] {
+export const getQuestionsByCategory = (category: string): ChatQuestion[] => {
   return chatQuestions.filter(q => q.category === category);
-}
+};
 
-/**
- * Get answer for a specific question ID
- * @param questionId The ID of the question
- * @returns The answer or a default message if not found
- */
-export function getAnswer(questionId: string): string {
-  const question = chatQuestions.find(q => q.id === questionId);
-  return question?.answer || "I'm sorry, I couldn't find an answer to that question.";
-}
+export const getAnswer = (question: string): string => {
+  // Mock answers based on question keywords
+  if (question.toLowerCase().includes("diversify")) {
+    return "To diversify your portfolio, consider spreading investments across different asset classes (stocks, bonds, real estate), sectors, and geographic regions. A common strategy is the 60/40 portfolio split between stocks and bonds, adjusted based on your risk tolerance and time horizon.";
+  }
+  
+  if (question.toLowerCase().includes("long-term")) {
+    return "For long-term investments, consider index funds, blue-chip stocks, and real estate investment trusts (REITs). These typically offer steady growth and lower risk over extended periods. Remember to regularly rebalance your portfolio and reinvest dividends.";
+  }
+  
+  if (question.toLowerCase().includes("risk")) {
+    return "To manage risk, implement diversification, set stop-loss orders, and maintain an emergency fund. Consider your time horizon and use dollar-cost averaging to reduce market timing risk. Regular portfolio rebalancing helps maintain your desired risk level.";
+  }
+  
+  if (question.toLowerCase().includes("market trends")) {
+    return "Current market trends show increasing focus on sustainable investments, digital assets, and AI-driven technologies. However, it's important to maintain a long-term perspective and not chase short-term trends without careful consideration.";
+  }
+  
+  if (question.toLowerCase().includes("retirement")) {
+    return "Retirement planning should start early. Consider maximizing contributions to tax-advantaged accounts like 401(k)s and IRAs. Aim to save 15-20% of your income, adjust for inflation, and regularly review your investment strategy as you near retirement.";
+  }
+  
+  if (question.toLowerCase().includes("tax")) {
+    return "To optimize tax efficiency, consider using tax-advantaged accounts (401(k), IRA, HSA), tax-loss harvesting, and municipal bonds. Long-term investments receive preferential tax treatment. Consult with a tax professional for personalized advice.";
+  }
+  
+  // Default response for other questions
+  return "That's an interesting question. While I can provide general guidance, I recommend consulting with a financial advisor for personalized advice based on your specific situation.";
+};
 
 /**
  * Generate personalized financial insights based on user data

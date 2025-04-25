@@ -13,7 +13,7 @@ export default authMiddleware({
     "/((?!.*\\..*|_next).*)",
     "/(api|trpc)(.*)",
     "/api/openai(.*)",
-    "/_next/static/(.)*",
+    "/_next/static/(.*)",
     "/favicon.ico",
     "/images/(.*)"
   ],

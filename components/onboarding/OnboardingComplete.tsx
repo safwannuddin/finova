@@ -22,7 +22,7 @@ export default function OnboardingComplete() {
       </div>
       <h1 className="text-2xl font-bold mb-2">Onboarding Complete!</h1>
       <p className="text-muted-foreground mb-8 max-w-md">
-        You've successfully completed the setup process. To access your personalized dashboard, please create an account or sign in.
+        You&apos;ve successfully completed the setup process. To access your personalized dashboard, please create an account or sign in.
       </p>
       <Button onClick={handleContinue} className="w-full max-w-sm" size="lg">
         {loading ? "Loading..." : "Continue to Create Account"}

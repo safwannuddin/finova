@@ -1,13 +1,13 @@
 'use client';
 
-import { useState } from 'react';
-import { MessageCircle, X, ChevronRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Bot, X, Send, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { categories, getQuestionsByCategory, ChatQuestion } from '@/lib/openai';
-import { motion, AnimatePresence } from 'framer-motion';
-import { cn } from '@/lib/utils';
+import { categories, chatQuestions, getQuestionsByCategory, getAnswer } from '@/lib/openai';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -17,164 +17,208 @@ interface Message {
 
 export default function ChatbotButton() {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [availableQuestions, setAvailableQuestions] = useState<ChatQuestion[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
 
   const toggleChat = () => {
     setIsOpen(!isOpen);
     if (!isOpen) {
-      // Reset state when opening
       setSelectedCategory(null);
-      setAvailableQuestions([]);
+      setMessages([
+        {
+          role: 'assistant',
+          content: 'Hello! I\'m your AI financial assistant. How can I help you today?',
+          timestamp: new Date()
+        }
+      ]);
     }
   };
 
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category);
-    const questions = getQuestionsByCategory(category);
-    setAvailableQuestions(questions);
   };
 
-  const handleQuestionSelect = (question: ChatQuestion) => {
-    const newMessages: Message[] = [
-      ...messages,
-      { role: 'user', content: question.question, timestamp: new Date() },
-      { role: 'assistant', content: question.answer, timestamp: new Date() }
-    ];
-    setMessages(newMessages);
-    setSelectedCategory(null);
-    setAvailableQuestions([]);
+  const handleQuestionSelect = async (question: string) => {
+    setMessages(prev => [...prev, { role: 'user', content: question, timestamp: new Date() }]);
+    setIsTyping(true);
+    
+    // Simulate AI typing delay
+    setTimeout(() => {
+      const answer = getAnswer(question);
+      setMessages(prev => [...prev, { role: 'assistant', content: answer, timestamp: new Date() }]);
+      setIsTyping(false);
+    }, 1000);
   };
 
-  const handleBack = () => {
-    setSelectedCategory(null);
-    setAvailableQuestions([]);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim()) return;
+
+    const userMessage = input.trim();
+    setInput('');
+    setMessages(prev => [...prev, { role: 'user', content: userMessage, timestamp: new Date() }]);
+    setIsTyping(true);
+
+    // Simulate AI response
+    setTimeout(() => {
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: 'I understand your question about ' + userMessage + '. Let me help you with that...',
+        timestamp: new Date()
+      }]);
+      setIsTyping(false);
+    }, 1500);
   };
 
   return (
-    <div className="fixed top-24 right-8 z-50">
+    <>
       <motion.div
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        className="fixed bottom-6 right-6 z-50"
       >
         <Button
           onClick={toggleChat}
-          size="icon"
-          className={cn(
-            "h-14 w-14 rounded-full shadow-lg transition-all duration-300",
-            "bg-primary hover:bg-primary/90",
-            "border-4 border-background",
-            "flex items-center justify-center",
-            isOpen ? "rotate-0" : "rotate-0",
-            "hover:shadow-xl hover:border-primary/20",
-            "relative"
-          )}
+          size="lg"
+          className="h-14 w-14 rounded-full shadow-lg bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
         >
-          <motion.div
-            initial={false}
-            animate={{ rotate: isOpen ? 90 : 0 }}
-            transition={{ duration: 0.2 }}
-          >
+          <AnimatePresence mode="wait">
             {isOpen ? (
-              <X className="h-6 w-6 text-white" />
+              <motion.div
+                key="close"
+                initial={{ rotate: -180, opacity: 0 }}
+                animate={{ rotate: 0, opacity: 1 }}
+                exit={{ rotate: 180, opacity: 0 }}
+              >
+                <X className="h-6 w-6" />
+              </motion.div>
             ) : (
-              <MessageCircle className="h-6 w-6 text-white" />
+              <motion.div
+                key="open"
+                initial={{ rotate: 180, opacity: 0 }}
+                animate={{ rotate: 0, opacity: 1 }}
+                exit={{ rotate: -180, opacity: 0 }}
+              >
+                <Bot className="h-6 w-6" />
+              </motion.div>
             )}
-          </motion.div>
-          {!isOpen && (
-            <span className="absolute -top-2 -right-2 h-5 w-5 bg-secondary rounded-full flex items-center justify-center text-[10px] font-bold text-white">
-              AI
-            </span>
-          )}
+          </AnimatePresence>
         </Button>
       </motion.div>
 
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="absolute top-20 right-0 w-80 md:w-96"
+            className="fixed bottom-24 right-6 w-96 z-50"
           >
-            <Card className="shadow-2xl border-primary/10 backdrop-blur-sm">
-              <div className="p-4 border-b bg-primary/5">
-                <h3 className="font-semibold text-lg flex items-center gap-2">
-                  <MessageCircle className="h-5 w-5 text-primary" />
-                  Financial Assistant
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  Select a topic to get started
-                </p>
-              </div>
+            <Card className="backdrop-blur-sm bg-background/95 shadow-xl border-primary/20">
+              <div className="h-[600px] flex flex-col">
+                <div className="p-4 border-b border-border">
+                  <h2 className="text-lg font-semibold bg-gradient-to-r from-primary to-primary/50 bg-clip-text text-transparent">
+                    AI Financial Assistant
+                  </h2>
+                  <p className="text-sm text-muted-foreground">Ask me anything about your finances</p>
+                </div>
 
-              <ScrollArea className="h-[400px] p-4">
-                {!selectedCategory ? (
-                  // Show categories
-                  <div className="space-y-2">
-                    {categories.map((category) => (
-                      <Button
-                        key={category}
-                        variant="outline"
-                        className="w-full justify-between hover:bg-primary/5 hover:text-primary transition-colors"
-                        onClick={() => handleCategoryClick(category)}
-                      >
-                        {category}
-                        <ChevronRight size={16} />
-                      </Button>
-                    ))}
-                  </div>
-                ) : (
-                  // Show questions for selected category
+                <ScrollArea className="flex-1 p-4">
                   <div className="space-y-4">
-                    <Button
-                      variant="ghost"
-                      className="mb-2 hover:bg-primary/5 hover:text-primary"
-                      onClick={handleBack}
-                    >
-                      ← Back to topics
-                    </Button>
-                    <div className="space-y-2">
-                      {availableQuestions.map((q) => (
-                        <Button
-                          key={q.id}
-                          variant="outline"
-                          className="w-full justify-start hover:bg-primary/5 hover:text-primary transition-colors"
-                          onClick={() => handleQuestionSelect(q)}
-                        >
-                          {q.question}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {messages.length > 0 && (
-                  <div className="mt-6 space-y-4">
-                    <div className="h-px bg-border" />
-                    <h4 className="font-medium">Recent Answers</h4>
-                    {messages.map((msg, index) => (
-                      <div
-                        key={index}
-                        className={cn(
-                          "p-3 rounded-lg text-sm",
-                          msg.role === 'user'
-                            ? 'bg-primary/10 ml-4'
-                            : 'bg-muted mr-4 border border-border'
-                        )}
-                      >
-                        {msg.content}
+                    {!selectedCategory ? (
+                      <div className="grid grid-cols-2 gap-2">
+                        {categories.map((category) => (
+                          <motion.button
+                            key={category}
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={() => handleCategoryClick(category)}
+                            className="p-3 rounded-lg bg-accent/10 hover:bg-accent/20 transition-colors text-left group"
+                          >
+                            <span className="text-sm font-medium">{category}</span>
+                            <ChevronRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity inline-block ml-1" />
+                          </motion.button>
+                        ))}
                       </div>
+                    ) : (
+                      <div className="space-y-2">
+                        {chatQuestions
+                          .filter(q => q.category === selectedCategory)
+                          .map((q) => (
+                            <motion.button
+                              key={q.id}
+                              whileHover={{ scale: 1.02 }}
+                              whileTap={{ scale: 0.98 }}
+                              onClick={() => handleQuestionSelect(q.question)}
+                              className="w-full p-3 rounded-lg bg-accent/10 hover:bg-accent/20 transition-colors text-left text-sm"
+                            >
+                              {q.question}
+                            </motion.button>
+                          ))}
+                      </div>
+                    )}
+
+                    {messages.map((message, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                      >
+                        <div
+                          className={`max-w-[80%] p-3 rounded-lg ${
+                            message.role === 'user'
+                              ? 'bg-primary text-primary-foreground'
+                              : 'bg-muted'
+                          }`}
+                        >
+                          <p className="text-sm">{message.content}</p>
+                          <span className="text-xs opacity-70 mt-1 block">
+                            {message.timestamp.toLocaleTimeString()}
+                          </span>
+                        </div>
+                      </motion.div>
                     ))}
+
+                    {isTyping && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="flex justify-start"
+                      >
+                        <div className="bg-muted p-3 rounded-lg">
+                          <div className="flex space-x-2">
+                            <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                            <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                            <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
                   </div>
-                )}
-              </ScrollArea>
+                </ScrollArea>
+
+                <form onSubmit={handleSubmit} className="p-4 border-t border-border">
+                  <div className="flex gap-2">
+                    <Input
+                      value={input}
+                      onChange={(e) => setInput(e.target.value)}
+                      placeholder="Type your question..."
+                      className="flex-1"
+                    />
+                    <Button type="submit" size="icon" disabled={!input.trim()}>
+                      <Send className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </form>
+              </div>
             </Card>
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </>
   );
 }

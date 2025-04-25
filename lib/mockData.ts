@@ -72,6 +72,14 @@ export interface Insight {
   impact: 'low' | 'medium' | 'high';
 }
 
+export interface MarketIndex {
+  name: string;
+  symbol: string;
+  value: number;
+  change: number;
+  changePercent: number;
+}
+
 // Generate mock data based on user inputs
 export const generateMockPortfolio = (
   monthlyIncome: number,
@@ -568,20 +576,56 @@ function generateTransactions(monthlyIncome: number, monthlyExpenses: number): T
 }
 
 function formatDate(date: Date): string {
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  return date.toISOString().split('T')[0];
 }
 
 function getDescriptionForCategory(category: string): string {
-  const descriptions = {
-    Housing: ['Rent Payment', 'Mortgage Payment', 'Home Insurance', 'Property Tax'],
-    Transportation: ['Gas Station', 'Car Insurance', 'Public Transit', 'Uber Ride', 'Car Maintenance'],
-    Food: ['Grocery Store', 'Restaurant', 'Coffee Shop', 'Food Delivery', 'Bakery'],
-    Utilities: ['Electricity Bill', 'Water Bill', 'Internet Service', 'Phone Bill'],
-    Entertainment: ['Movie Theater', 'Concert Tickets', 'Streaming Service', 'Book Store', 'Gaming Subscription'],
-    Other: ['Shopping', 'Healthcare', 'Education', 'Personal Care', 'Gifts'],
+  const descriptions: { [key: string]: string[] } = {
+    Housing: [
+      'Monthly Rent',
+      'Mortgage Payment',
+      'Home Insurance',
+      'Property Tax',
+      'Utilities Payment'
+    ],
+    Transportation: [
+      'Gas Station',
+      'Car Insurance',
+      'Public Transit Pass',
+      'Car Maintenance',
+      'Parking Fee'
+    ],
+    Food: [
+      'Grocery Shopping',
+      'Restaurant Dinner',
+      'Coffee Shop',
+      'Food Delivery',
+      'Lunch Break'
+    ],
+    Utilities: [
+      'Electricity Bill',
+      'Water Bill',
+      'Internet Service',
+      'Phone Bill',
+      'Gas Bill'
+    ],
+    Entertainment: [
+      'Movie Tickets',
+      'Streaming Service',
+      'Concert Tickets',
+      'Gaming Purchase',
+      'Gym Membership'
+    ],
+    Other: [
+      'Online Shopping',
+      'Healthcare',
+      'Personal Care',
+      'Education',
+      'Miscellaneous'
+    ]
   };
-  
-  const options = descriptions[category as keyof typeof descriptions] || ['Payment'];
+
+  const options = descriptions[category] || descriptions.Other;
   return options[Math.floor(Math.random() * options.length)];
 }
 
@@ -684,4 +728,31 @@ function generateInsights(
   });
   
   return insights.slice(0, 3); // Return only top 3 insights
+}
+
+// Generate mock market indices
+export function generateMarketIndices(): MarketIndex[] {
+  return [
+    {
+      name: "S&P 500",
+      symbol: "SPX",
+      value: 4892.37,
+      change: 28.47,
+      changePercent: 0.58
+    },
+    {
+      name: "Dow Jones",
+      symbol: "DJI",
+      value: 38562.88,
+      change: -124.35,
+      changePercent: -0.32
+    },
+    {
+      name: "NASDAQ",
+      symbol: "IXIC",
+      value: 15628.95,
+      change: 78.32,
+      changePercent: 0.51
+    }
+  ];
 }
