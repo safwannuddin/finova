@@ -30,23 +30,16 @@ export default function RootLayout({
   return (
     <ClerkProvider
       appearance={{
-        baseTheme: {
-          colors: {
-            primary: 'hsl(217, 91%, 60%)',
-            primaryLight: 'hsl(217, 91%, 70%)',
-            primaryDark: 'hsl(217, 91%, 50%)',
-            background: 'hsl(222, 47%, 11%)',
-            backgroundSecondary: 'hsl(217, 32%, 17%)',
-            text: 'hsl(0, 0%, 98%)',
-            textSecondary: 'hsl(240, 5%, 64.9%)',
-            danger: 'hsl(0, 84.2%, 60.2%)',
-            success: 'hsl(142, 76%, 36%)',
-          },
-          variables: {
-            borderRadius: '0.5rem',
-            fontFamily: 'var(--font-dm-sans)',
-            fontSize: '16px',
-          },
+        variables: {
+          colorPrimary: 'hsl(217, 91%, 60%)',
+          colorBackground: 'hsl(222, 47%, 11%)',
+          colorText: 'hsl(0, 0%, 98%)',
+          colorTextSecondary: 'hsl(240, 5%, 64.9%)',
+          colorDanger: 'hsl(0, 84.2%, 60.2%)',
+          colorSuccess: 'hsl(142, 76%, 36%)',
+          borderRadius: '0.5rem',
+          fontFamily: 'var(--font-dm-sans)',
+          fontSize: '16px',
         },
         elements: {
           formButtonPrimary: 'bg-primary hover:bg-primary/90 transition-colors duration-200',

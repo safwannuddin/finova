@@ -8,13 +8,15 @@ import Header from '@/components/dashboard/Header';
 import NetWorthCard from '@/components/dashboard/NetWorthCard';
 import PortfolioAllocationCard from '@/components/dashboard/PortfolioAllocationCard';
 import { BudgetCard } from '@/components/dashboard/BudgetCard';
-import { FinancialHealthCard } from '@/components/dashboard/FinancialHealthCard';
+import FinancialHealthCard from '@/components/dashboard/FinancialHealthCard';
 import InsightsCard from '@/components/dashboard/InsightsCard';
 import StockMarketIndicesCard from '@/components/dashboard/StockMarketIndicesCard';
 import { GoalsProgressCard } from '@/components/dashboard/GoalsProgressCard';
 import ExpensesBreakdownCard from '@/components/dashboard/ExpensesBreakdownCard';
 import ChatbotButton from '@/components/ai/ChatbotButton';
 import { generateFinancialInsights } from '@/lib/mockDataGenerators';
+import { FinancialGoal, TimeHorizon } from '@/context/UserContext';
+import { FinancialGoal as MockFinancialGoal } from '@/lib/mockData';
 
 interface HealthMetric {
   id: string;
@@ -42,17 +44,6 @@ interface Asset {
   performance: number;
   riskLevel: string;
   style?: string;
-}
-
-interface Goal {
-  id: string;
-  title: string;
-  type: string;
-  targetAmount: number;
-  currentAmount: number;
-  deadline: string;
-  priority: number;
-  timeHorizon: string;
 }
 
 interface FinancialInsights {
@@ -193,7 +184,17 @@ export default function Dashboard() {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.5 }}
           >
-            <GoalsProgressCard goals={portfolio.financialGoals} />
+            <GoalsProgressCard 
+              goals={portfolio.financialGoals.map((goal: MockFinancialGoal) => ({
+                id: goal.id,
+                title: goal.name,
+                type: goal.name as FinancialGoal,
+                targetAmount: goal.targetAmount,
+                currentAmount: goal.currentAmount,
+                timeHorizon: 'MediumTerm', // Default value since it's not in the mock data
+                targetDate: new Date(goal.deadline)
+              }))} 
+            />
           </motion.div>
 
           {/* Expenses Breakdown */}
