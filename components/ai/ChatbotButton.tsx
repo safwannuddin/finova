@@ -15,7 +15,11 @@ interface Message {
   timestamp: Date;
 }
 
-export default function ChatbotButton() {
+interface ChatbotButtonProps {
+  className?: string;
+}
+
+export default function ChatbotButton({ className = "" }: ChatbotButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -77,7 +81,7 @@ export default function ChatbotButton() {
       <motion.div
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
-        className="fixed bottom-6 right-6 z-50"
+        className={`fixed bottom-6 right-6 z-50 ${className}`}
       >
         <Button
           onClick={toggleChat}
