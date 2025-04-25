@@ -117,14 +117,14 @@ export default function InvestmentInfoStep({ onSubmit, onBack }: InvestmentInfoS
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -10 }}
         transition={{ duration: 0.3 }}
-        className="bg-card/50 backdrop-blur-md rounded-lg border border-border p-6 shadow-lg"
+        className="bg-card/50 backdrop-blur-md rounded-lg border border-border p-3 shadow-lg max-w-[90%] mx-auto"
       >
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-            <div className="space-y-6">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-3">
+            <div className="space-y-3">
               <div>
-                <h3 className="text-lg font-medium mb-2">Risk Appetite</h3>
-                <p className="text-sm text-muted-foreground mb-4">
+                <h3 className="text-base font-medium mb-1">Risk Appetite</h3>
+                <p className="text-xs text-muted-foreground mb-1">
                   Choose your investment risk tolerance
                 </p>
                 
@@ -137,12 +137,12 @@ export default function InvestmentInfoStep({ onSubmit, onBack }: InvestmentInfoS
                         <RadioGroup
                           onValueChange={field.onChange}
                           defaultValue={field.value}
-                          className="flex flex-col space-y-3"
+                          className="flex flex-col space-y-2"
                         >
                           {riskProfiles.map((profile) => (
                             <div
                               key={profile.value}
-                              className={`flex items-center space-x-2 rounded-lg border p-3 transition-all hover:border-primary ${
+                              className={`flex items-center space-x-2 rounded-lg border p-2 transition-all hover:border-primary ${
                                 field.value === profile.value ? 'border-primary bg-primary/10' : 'border-border'
                               }`}
                             >
@@ -155,8 +155,8 @@ export default function InvestmentInfoStep({ onSubmit, onBack }: InvestmentInfoS
                                 htmlFor={profile.value}
                                 className="flex-1 cursor-pointer"
                               >
-                                <div className="font-medium">{profile.label}</div>
-                                <div className="text-sm text-muted-foreground">
+                                <div className="font-medium text-sm">{profile.label}</div>
+                                <div className="text-xs text-muted-foreground">
                                   {profile.description}
                                 </div>
                               </label>
@@ -170,8 +170,8 @@ export default function InvestmentInfoStep({ onSubmit, onBack }: InvestmentInfoS
               </div>
               
               <div>
-                <h3 className="text-lg font-medium mb-2">Investment Interests</h3>
-                <p className="text-sm text-muted-foreground mb-4">
+                <h3 className="text-base font-medium mb-1">Investment Interests</h3>
+                <p className="text-xs text-muted-foreground mb-1">
                   Select the investment types you're interested in
                 </p>
                 
@@ -180,7 +180,7 @@ export default function InvestmentInfoStep({ onSubmit, onBack }: InvestmentInfoS
                   name="investments"
                   render={() => (
                     <FormItem>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div className="grid grid-cols-2 gap-2">
                         {investmentOptions.map((option) => (
                           <FormField
                             key={option.value}
@@ -230,18 +230,7 @@ export default function InvestmentInfoStep({ onSubmit, onBack }: InvestmentInfoS
               </div>
             </div>
             
-            <div className="flex justify-between">
-              <Button 
-                type="button" 
-                variant="outline"
-                onClick={onBack}
-                disabled={isSubmitting || redirecting}
-                className="relative group"
-              >
-                <MoveLeft size={16} className="mr-2 transition-transform group-hover:-translate-x-1" />
-                <span>Back</span>
-              </Button>
-              
+            <div className="flex justify-end">
               <Button 
                 type="submit" 
                 className="relative group overflow-hidden"

@@ -12,6 +12,7 @@
     "@clerk/nextjs": "4.29.9",
     "@hookform/resolvers": "^3.9.0",
     "@next/swc-wasm-nodejs": "14.1.0",
+    "@prisma/client": "^6.6.0",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-aspect-ratio": "^1.0.3",
@@ -39,6 +40,7 @@
     "@radix-ui/react-toggle": "^1.0.3",
     "@radix-ui/react-toggle-group": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.0.7",
+    "@supabase/supabase-js": "^2.49.4",
     "@types/aos": "^3.0.7",
     "@types/node": "^20",
     "@types/react": "^18",
@@ -78,6 +80,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@types/react-sparklines": "^1.7.5"
+    "@types/react-sparklines": "^1.7.5",
+    "prisma": "^6.6.0"
   }
 }

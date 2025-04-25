@@ -185,18 +185,7 @@ export default function FinancialInfoStep({ onSubmit, onBack }: FinancialInfoSte
               />
             </div>
           </div>
-          
-          <div className="flex justify-between">
-            <Button 
-              type="button" 
-              variant="outline"
-              onClick={onBack}
-              className="relative group"
-            >
-              <MoveLeft size={16} className="mr-2 transition-transform group-hover:-translate-x-1" />
-              <span>Back</span>
-            </Button>
-            
+            <div className="flex justify-end">
             <Button 
               type="submit" 
               className="relative group"
