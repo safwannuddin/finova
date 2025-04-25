@@ -109,7 +109,7 @@ export default function GoalsStep({ onSubmit, onBack }: GoalsStepProps) {
     setIsSubmitting(true);
     try {
       // Map time horizons to goals
-      const goalTimeHorizons: Record<FinancialGoal, TimeHorizon> = {};
+      const goalTimeHorizons: Partial<Record<FinancialGoal, TimeHorizon>> = {};
       selectedGoals.forEach(goal => {
         goalTimeHorizons[goal] = timeHorizonMap[goal];
       });
