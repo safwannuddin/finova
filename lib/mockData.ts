@@ -397,18 +397,19 @@ export const generateMockPortfolio = (
 // Helper functions
 function getRandomPerformance(risk: string, period: 'daily' | 'weekly' | 'monthly' | 'yearly'): number {
   const baseMultiplier = {
-    daily: 0.001,
-    weekly: 0.005,
-    monthly: 0.02,
-    yearly: 0.08,
+    daily: 0.02,
+    weekly: 0.05,
+    monthly: 0.1,
+    yearly: 0.2
   };
-  
-  const riskMultiplier = {
+
+  const riskMultipliers = {
     Low: 0.5,
     Medium: 1,
-    High: 2,
-  }[risk];
-  
+    High: 1.5
+  };
+
+  const riskMultiplier = riskMultipliers[risk as keyof typeof riskMultipliers] || 1;
   const randomFactor = Math.random() * 2 - 1; // between -1 and 1
   return baseMultiplier[period] * riskMultiplier * randomFactor;
 }

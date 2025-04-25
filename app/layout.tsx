@@ -20,6 +20,31 @@ const dmSans = DM_Sans({
 export const metadata: Metadata = {
   title: 'Finova - Your Personalized Wealth Hub',
   description: 'AI-powered financial portfolio management',
+  icons: {
+    icon: [
+      {
+        url: '/favicon.ico',
+        sizes: 'any',
+      },
+      {
+        url: '/icon.png',
+        type: 'image/png',
+        sizes: '32x32',
+      },
+      {
+        url: '/apple-icon.png',
+        type: 'image/png',
+        sizes: '180x180',
+      },
+    ],
+    apple: [
+      {
+        url: '/apple-icon.png',
+        sizes: '180x180',
+      },
+    ],
+  },
+  manifest: '/manifest.json',
 }
 
 export default function RootLayout({

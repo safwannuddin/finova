@@ -91,16 +91,16 @@ export default function FinancialGoalsCard({ goals }: FinancialGoalsCardProps) {
                   <div className="relative pt-1">
                     <Progress 
                       value={progress} 
-                      className="h-2"
-                      indicatorClassName={getProgressColor(progress)}
+                      className={`h-2 ${getProgressColor(progress)}`}
                     />
                   </div>
                   <div className="flex justify-between items-center text-xs">
                     <div className="font-medium">
                       {formatCurrency(goal.currentAmount)}
-                      <span className="text-muted-foreground ml-1">of {formatCurrency(goal.targetAmount)}</span>
                     </div>
-                    <div className="font-medium">{progress}%</div>
+                    <div className="text-muted-foreground">
+                      {formatCurrency(goal.targetAmount)}
+                    </div>
                   </div>
                 </div>
               </motion.div>
