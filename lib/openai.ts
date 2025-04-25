@@ -1,36 +1,81 @@
-// Predefined Q&A for financial assistance
-const predefinedAnswers = {
-  "what is my portfolio worth": "You can view your current portfolio value in the Net Worth card on your dashboard.",
-  "how do i invest": "Based on your risk profile, we recommend diversifying your investments across stocks, bonds, and ETFs. Check the Investment Recommendations card for personalized suggestions.",
-  "what is my risk profile": "Your risk profile is determined during onboarding. You can view and update it in your profile settings.",
-  "how do i save more": "Try following the 50/30/20 rule: 50% for needs, 30% for wants, and 20% for savings and investments.",
-  "what are my financial goals": "You can view and manage your financial goals in the Goals Progress card on your dashboard.",
-  "how is my financial health": "Check the Financial Health card on your dashboard for a comprehensive overview of your financial wellbeing.",
-  "help": "I can help you with: portfolio value, investment advice, risk profile, savings tips, financial goals, and financial health. Just ask one of these topics!"
-};
+export const categories = [
+  "Portfolio",
+  "Investments",
+  "Risk Profile",
+  "Savings",
+  "Goals",
+  "Financial Health"
+];
+
+export interface ChatQuestion {
+  id: string;
+  category: string;
+  question: string;
+  answer: string;
+}
+
+export const chatQuestions: ChatQuestion[] = [
+  {
+    id: "portfolio-1",
+    category: "Portfolio",
+    question: "How should I diversify my investment portfolio?",
+    answer: "A well-diversified portfolio typically includes a mix of different asset classes: stocks (40-60%), bonds (20-40%), and alternative investments (0-20%). The exact allocation depends on your risk tolerance and investment timeline. Consider geographic diversification and different sectors to reduce risk."
+  },
+  {
+    id: "portfolio-2",
+    category: "Portfolio",
+    question: "What's a good portfolio rebalancing strategy?",
+    answer: "Regular portfolio rebalancing (every 6-12 months) helps maintain your target asset allocation. If any asset class deviates by more than 5% from your target, consider rebalancing. This helps manage risk and can improve long-term returns through disciplined buying and selling."
+  },
+  {
+    id: "investments-1",
+    category: "Investments",
+    question: "Should I invest in individual stocks or ETFs?",
+    answer: "For most investors, ETFs offer better diversification and lower risk than individual stocks. They provide exposure to many companies, sectors, or markets with lower costs and less research required. However, if you have the time and knowledge for research, a combination of both can be beneficial."
+  },
+  {
+    id: "risk-1",
+    category: "Risk Profile",
+    question: "How do I determine my risk tolerance?",
+    answer: "Your risk tolerance depends on factors like your investment timeline, financial goals, and comfort with market volatility. Consider: How long until you need the money? How much loss can you handle without panic selling? Generally, younger investors can take more risk as they have time to recover from market downturns."
+  },
+  {
+    id: "savings-1",
+    category: "Savings",
+    question: "How much should I keep in my emergency fund?",
+    answer: "A general rule is to maintain 3-6 months of living expenses in easily accessible savings. If your income is variable or you have dependents, consider saving 6-12 months. Keep this money in a high-yield savings account for both safety and some interest earnings."
+  },
+  {
+    id: "goals-1",
+    category: "Goals",
+    question: "How do I set realistic financial goals?",
+    answer: "Use the SMART framework: Specific, Measurable, Achievable, Relevant, and Time-bound. For example, instead of 'save more money,' set a goal like 'save $6,000 for emergency fund in 12 months by setting aside $500 monthly.' Break larger goals into smaller milestones and track progress regularly."
+  },
+  {
+    id: "health-1",
+    category: "Financial Health",
+    question: "What are key financial health indicators to track?",
+    answer: "Monitor these key metrics: 1) Debt-to-income ratio (should be under 36%), 2) Emergency fund coverage (3-6 months), 3) Retirement savings rate (aim for 15-20% of income), 4) Credit score (target 740+), and 5) Net worth growth. Review these monthly or quarterly to stay on track."
+  }
+];
 
 /**
- * Get a response from the predefined Q&A system
- * @param message User's message
- * @returns AI-generated response
+ * Get questions by category
+ * @param category Category to filter by
+ * @returns Array of questions for the category
  */
-export async function getFinancialAdvice(message: string): Promise<string> {
-  const normalizedMessage = message.toLowerCase().trim();
-  
-  // Check for exact matches first
-  if (predefinedAnswers[normalizedMessage]) {
-    return predefinedAnswers[normalizedMessage];
-  }
-  
-  // Check for partial matches
-  for (const [question, answer] of Object.entries(predefinedAnswers)) {
-    if (normalizedMessage.includes(question)) {
-      return answer;
-    }
-  }
-  
-  // Default response if no match found
-  return "I can help you with basic financial questions. Try asking about your portfolio, investments, savings, goals, or financial health. Type 'help' to see all topics I can assist with.";
+export function getQuestionsByCategory(category: string): ChatQuestion[] {
+  return chatQuestions.filter(q => q.category === category);
+}
+
+/**
+ * Get answer for a specific question ID
+ * @param questionId The ID of the question
+ * @returns The answer or a default message if not found
+ */
+export function getAnswer(questionId: string): string {
+  const question = chatQuestions.find(q => q.id === questionId);
+  return question?.answer || "I'm sorry, I couldn't find an answer to that question.";
 }
 
 /**
@@ -39,7 +84,6 @@ export async function getFinancialAdvice(message: string): Promise<string> {
  * @returns Array of financial insights
  */
 export async function generatePersonalizedInsights(userData: any): Promise<any[]> {
-  // Return static insights
   return [
     {
       title: "Emergency Fund Status",
@@ -68,7 +112,6 @@ export async function generatePersonalizedInsights(userData: any): Promise<any[]
  * @returns Array of investment recommendations
  */
 export async function generateInvestmentRecommendations(userData: any): Promise<any[]> {
-  // Return static recommendations
   return [
     {
       id: "1",
