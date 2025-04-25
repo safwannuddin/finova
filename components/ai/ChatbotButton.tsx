@@ -53,27 +53,58 @@ export default function ChatbotButton() {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 z-50">
-      <Button
-        onClick={toggleChat}
-        size="icon"
-        className="h-12 w-12 rounded-full shadow-lg"
+    <div className="fixed top-24 right-8 z-50">
+      <motion.div
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
       >
-        {isOpen ? <X /> : <MessageCircle />}
-      </Button>
+        <Button
+          onClick={toggleChat}
+          size="icon"
+          className={cn(
+            "h-14 w-14 rounded-full shadow-lg transition-all duration-300",
+            "bg-primary hover:bg-primary/90",
+            "border-4 border-background",
+            "flex items-center justify-center",
+            isOpen ? "rotate-0" : "rotate-0",
+            "hover:shadow-xl hover:border-primary/20",
+            "relative"
+          )}
+        >
+          <motion.div
+            initial={false}
+            animate={{ rotate: isOpen ? 90 : 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            {isOpen ? (
+              <X className="h-6 w-6 text-white" />
+            ) : (
+              <MessageCircle className="h-6 w-6 text-white" />
+            )}
+          </motion.div>
+          {!isOpen && (
+            <span className="absolute -top-2 -right-2 h-5 w-5 bg-secondary rounded-full flex items-center justify-center text-[10px] font-bold text-white">
+              AI
+            </span>
+          )}
+        </Button>
+      </motion.div>
 
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="absolute bottom-16 right-0 w-80 md:w-96"
+            className="absolute top-20 right-0 w-80 md:w-96"
           >
-            <Card className="shadow-xl">
-              <div className="p-4 border-b">
-                <h3 className="font-semibold">Financial Assistant</h3>
+            <Card className="shadow-2xl border-primary/10 backdrop-blur-sm">
+              <div className="p-4 border-b bg-primary/5">
+                <h3 className="font-semibold text-lg flex items-center gap-2">
+                  <MessageCircle className="h-5 w-5 text-primary" />
+                  Financial Assistant
+                </h3>
                 <p className="text-sm text-muted-foreground">
                   Select a topic to get started
                 </p>
@@ -87,7 +118,7 @@ export default function ChatbotButton() {
                       <Button
                         key={category}
                         variant="outline"
-                        className="w-full justify-between"
+                        className="w-full justify-between hover:bg-primary/5 hover:text-primary transition-colors"
                         onClick={() => handleCategoryClick(category)}
                       >
                         {category}
@@ -100,7 +131,7 @@ export default function ChatbotButton() {
                   <div className="space-y-4">
                     <Button
                       variant="ghost"
-                      className="mb-2"
+                      className="mb-2 hover:bg-primary/5 hover:text-primary"
                       onClick={handleBack}
                     >
                       ← Back to topics
@@ -110,7 +141,7 @@ export default function ChatbotButton() {
                         <Button
                           key={q.id}
                           variant="outline"
-                          className="w-full justify-start"
+                          className="w-full justify-start hover:bg-primary/5 hover:text-primary transition-colors"
                           onClick={() => handleQuestionSelect(q)}
                         >
                           {q.question}
@@ -127,11 +158,12 @@ export default function ChatbotButton() {
                     {messages.map((msg, index) => (
                       <div
                         key={index}
-                        className={`p-3 rounded-lg text-sm ${
+                        className={cn(
+                          "p-3 rounded-lg text-sm",
                           msg.role === 'user'
                             ? 'bg-primary/10 ml-4'
-                            : 'bg-muted mr-4'
-                        }`}
+                            : 'bg-muted mr-4 border border-border'
+                        )}
                       >
                         {msg.content}
                       </div>
