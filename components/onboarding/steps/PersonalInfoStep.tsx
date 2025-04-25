@@ -11,6 +11,9 @@ import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { MoveRight } from 'lucide-react';
 
+import { supabase } from '@/lib/supabase'; // ✅ your Supabase client
+import { useUser } from '@clerk/nextjs';   // ✅ Clerk hook to get logged-in user
+
 const formSchema = z.object({
   name: z.string().min(2, {
     message: 'Name must be at least 2 characters.',
@@ -30,7 +33,8 @@ interface PersonalInfoStepProps {
 
 export default function PersonalInfoStep({ onSubmit }: PersonalInfoStepProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+  const { user } = useUser(); // ✅ get Clerk user
+
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -38,12 +42,40 @@ export default function PersonalInfoStep({ onSubmit }: PersonalInfoStepProps) {
       age: undefined,
     },
   });
-  
+
   const handleSubmit = async (data: FormData) => {
     setIsSubmitting(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 500));
-    onSubmit(data);
+    console.log('Submitting form with data:', data);
+    console.log('Current user ID:', user?.id);
+
+    try {
+      // Generate a temporary UUID if user is not authenticated
+      const temporaryId = user?.id || crypto.randomUUID();
+      
+      console.log('Sending to Supabase with ID:', temporaryId);
+      
+      const { data: responseData, error } = await supabase.from('user_profiles').upsert([
+        {
+          id: temporaryId,
+          name: data.name,
+          age: data.age,
+        },
+      ]);
+
+      if (error) {
+        console.error('❌ Supabase insert error:', error);
+      } else {
+        console.log('✅ User data added to Supabase');
+        
+        // If you need to remember this ID for later linking with the real user
+        localStorage.setItem('tempUserId', temporaryId);
+      }
+
+      onSubmit(data);
+    } catch (err) {
+      console.error('❌ Unexpected error:', err);
+    }
+
     setIsSubmitting(false);
   };
 
@@ -75,7 +107,7 @@ export default function PersonalInfoStep({ onSubmit }: PersonalInfoStepProps) {
                 </FormItem>
               )}
             />
-            
+
             <FormField
               control={form.control}
               name="age"
@@ -95,7 +127,7 @@ export default function PersonalInfoStep({ onSubmit }: PersonalInfoStepProps) {
               )}
             />
           </div>
-          
+
           <div className="flex justify-end">
             <Button 
               type="submit" 
