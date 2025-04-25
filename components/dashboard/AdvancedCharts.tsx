@@ -44,13 +44,17 @@ const monthlyData = [
   { name: 'Investments', amount: 2000 },
 ];
 
-export function AdvancedCharts() {
+interface AdvancedChartsProps {
+  className?: string;
+}
+
+export function AdvancedCharts({ className = "" }: AdvancedChartsProps) {
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="grid grid-cols-1 md:grid-cols-2 gap-6"
+      className={`grid grid-cols-1 md:grid-cols-2 gap-6 ${className}`}
     >
       {/* Asset Allocation Pie Chart */}
       <motion.div
