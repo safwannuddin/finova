@@ -18,9 +18,14 @@ interface Goal {
 interface GoalsProgressCardProps {
   goals?: Goal[];
   isLoading?: boolean;
+  className?: string;
 }
 
-export function GoalsProgressCard({ goals = [], isLoading = false }: GoalsProgressCardProps) {
+export function GoalsProgressCard({ 
+  goals = [], 
+  isLoading = false,
+  className = ""
+}: GoalsProgressCardProps) {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -57,7 +62,7 @@ export function GoalsProgressCard({ goals = [], isLoading = false }: GoalsProgre
   };
 
   return (
-    <Card>
+    <Card className={`overflow-hidden glass-card h-full ${className}`}>
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">

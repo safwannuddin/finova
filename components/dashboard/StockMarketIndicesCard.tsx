@@ -14,11 +14,13 @@ interface MarketIndex {
 interface StockMarketIndicesCardProps {
   indices?: MarketIndex[];
   isLoading?: boolean;
+  className?: string;
 }
 
 export default function StockMarketIndicesCard({
   indices = [],
-  isLoading = false
+  isLoading = false,
+  className = ""
 }: StockMarketIndicesCardProps) {
   
   // Format currency
@@ -37,7 +39,7 @@ export default function StockMarketIndicesCard({
   };
 
   return (
-    <Card>
+    <Card className={`overflow-hidden glass-card h-full ${className}`}>
       <CardHeader className="pb-2">
         <CardTitle className="text-lg font-medium">Market Indices</CardTitle>
         <CardDescription>Performance of major stock indices</CardDescription>

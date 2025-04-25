@@ -21,9 +21,15 @@ interface NetWorthCardProps {
   netWorth?: number;
   monthlyChange?: number;
   isLoading?: boolean;
+  className?: string;
 }
 
-export default function NetWorthCard({ netWorth = 0, monthlyChange = 0, isLoading = false }: NetWorthCardProps) {
+export default function NetWorthCard({ 
+  netWorth = 0, 
+  monthlyChange = 0, 
+  isLoading = false,
+  className = ""
+}: NetWorthCardProps) {
   const formattedNetWorth = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -34,7 +40,7 @@ export default function NetWorthCard({ netWorth = 0, monthlyChange = 0, isLoadin
   const isPositiveChange = monthlyChange >= 0;
 
   return (
-    <Card className="overflow-hidden glass-card h-full">
+    <Card className={`overflow-hidden glass-card h-full ${className}`}>
       <CardHeader className="pb-3">
         <div className="flex justify-between items-start">
           <div>

@@ -49,15 +49,15 @@ export default function RootLayout({
           },
         },
         elements: {
-          formButtonPrimary: 'bg-primary hover:bg-primary/90',
+          formButtonPrimary: 'bg-primary hover:bg-primary/90 transition-colors duration-200',
           card: 'bg-card',
           headerTitle: 'text-foreground',
           headerSubtitle: 'text-muted-foreground',
-          socialButtonsBlockButton: 'bg-card border-border text-foreground hover:bg-accent/10',
+          socialButtonsBlockButton: 'bg-card border-border text-foreground hover:bg-accent/10 transition-colors duration-200',
           dividerLine: 'bg-border',
           formFieldLabel: 'text-foreground',
-          formFieldInput: 'bg-input border-border text-foreground',
-          footerActionLink: 'text-primary hover:text-primary/90',
+          formFieldInput: 'bg-input border-border text-foreground transition-colors duration-200 focus:border-primary',
+          footerActionLink: 'text-primary hover:text-primary/90 transition-colors duration-200',
         },
       }}
     >
@@ -71,7 +71,9 @@ export default function RootLayout({
           >
             <UserProvider>
               <AnimationProvider>
-                {children}
+                <div className="fade-in">
+                  {children}
+                </div>
                 <Toaster />
               </AnimationProvider>
             </UserProvider>

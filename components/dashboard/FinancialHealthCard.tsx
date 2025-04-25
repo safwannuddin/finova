@@ -13,13 +13,17 @@ interface HealthMetric {
 
 interface FinancialHealthCardProps {
   score?: number;
+  isLoading?: boolean;
+  className?: string;
   metrics?: HealthMetric[];
   debtAmount?: number;
   creditScore?: number;
 }
 
-export function FinancialHealthCard({ 
+export default function FinancialHealthCard({ 
   score = 0, 
+  isLoading = false,
+  className = "",
   metrics = [],
   debtAmount,
   creditScore
@@ -55,7 +59,7 @@ export function FinancialHealthCard({
   };
 
   return (
-    <Card>
+    <Card className={`overflow-hidden glass-card h-full ${className}`}>
       <CardHeader className="pb-2">
         <div className="flex items-center space-x-2">
           <Heart className="h-5 w-5 text-primary" />

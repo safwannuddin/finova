@@ -12,12 +12,14 @@ interface ExpensesBreakdownCardProps {
   expenses?: ExpenseCategory[];
   totalExpenses?: number;
   isLoading?: boolean;
+  className?: string;
 }
 
 export default function ExpensesBreakdownCard({
   expenses = [],
   totalExpenses = 0,
-  isLoading = false
+  isLoading = false,
+  className = ""
 }: ExpensesBreakdownCardProps) {
   // Sort expenses by amount (highest first)
   const sortedExpenses = [...expenses].sort((a, b) => b.amount - a.amount);
@@ -33,7 +35,7 @@ export default function ExpensesBreakdownCard({
   };
 
   return (
-    <Card>
+    <Card className={`overflow-hidden glass-card h-full ${className}`}>
       <CardHeader className="pb-2">
         <CardTitle className="text-lg font-medium">Expenses Breakdown</CardTitle>
         <CardDescription>Monthly spending by category</CardDescription>

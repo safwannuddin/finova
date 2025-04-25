@@ -13,16 +13,18 @@ interface AssetAllocation {
 interface PortfolioAllocationCardProps {
   allocations?: AssetAllocation[];
   isLoading?: boolean;
+  className?: string;
 }
 
 export default function PortfolioAllocationCard({ 
   allocations = [], 
-  isLoading = false 
+  isLoading = false,
+  className = ""
 }: PortfolioAllocationCardProps) {
   const total = allocations.reduce((sum, item) => sum + item.value, 0);
   
   return (
-    <Card>
+    <Card className={`overflow-hidden glass-card h-full ${className}`}>
       <CardHeader className="pb-2">
         <CardTitle className="text-lg font-medium">Portfolio Allocation</CardTitle>
         <CardDescription>Your investment distribution by asset class</CardDescription>

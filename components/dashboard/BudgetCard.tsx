@@ -7,12 +7,14 @@ interface BudgetCardProps {
   budget?: User['budgetAllocation'];
   monthlyIncome?: number;
   isLoading?: boolean;
+  className?: string;
 }
 
 export function BudgetCard({ 
   budget, 
   monthlyIncome = 0,
-  isLoading = false 
+  isLoading = false,
+  className = ""
 }: BudgetCardProps) {
   
   const formatCurrency = (amount: number) => {
@@ -38,7 +40,7 @@ export function BudgetCard({
   const hasBudgetData = budget && Object.keys(budget).length > 0;
 
   return (
-    <Card>
+    <Card className={`overflow-hidden glass-card h-full ${className}`}>
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">

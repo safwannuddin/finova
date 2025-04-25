@@ -3,13 +3,13 @@ import { redirect } from "next/navigation";
 import Dashboard from "@/components/dashboard/Dashboard";
 import { AdvancedCharts } from "@/components/dashboard/AdvancedCharts";
 import { GoalsProgressCard } from "@/components/dashboard/GoalsProgressCard";
-import { FinancialHealthCard } from "@/components/dashboard/FinancialHealthCard";
+import FinancialHealthCard from "@/components/dashboard/FinancialHealthCard";
 import { BudgetCard } from "@/components/dashboard/BudgetCard";
 import StockMarketIndicesCard from "@/components/dashboard/StockMarketIndicesCard";
 import NetWorthCard from "@/components/dashboard/NetWorthCard";
 import ExpensesBreakdownCard from "@/components/dashboard/ExpensesBreakdownCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { PieChart, LineChart, BarChart3, TrendingUp } from "lucide-react";
+import { PieChart, LineChart, BarChart3, TrendingUp, Wallet, TrendingUpIcon } from "lucide-react";
 import ChatbotButton from "@/components/ai/ChatbotButton";
 import PortfolioAllocationCard from "@/components/dashboard/PortfolioAllocationCard";
 
@@ -105,139 +105,181 @@ export default async function DashboardPage() {
   return (
     <div className="min-h-screen bg-background">
       <main className="container mx-auto px-4 py-8">
+        {/* Header Section */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-foreground mb-2">Dashboard</h1>
+          <p className="text-muted-foreground">Welcome back! Here's your financial overview.</p>
+        </div>
+
         {/* Top Row - Key Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-          <NetWorthCard 
-            netWorth={125000} 
-            monthlyChange={3500} 
-          />
-          <FinancialHealthCard 
-            score={85} 
-            metrics={mockHealthMetrics}
-            debtAmount={15000}
-            creditScore={750}
-          />
-          <BudgetCard 
-            budget={{
-              necessities: 50,
-              wants: 30,
-              savings: 20
-            }}
-            monthlyIncome={8500}
-          />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="relative">
+            <div className="absolute -top-2 -left-2 w-4 h-4 bg-primary rounded-full opacity-20"></div>
+            <NetWorthCard 
+              netWorth={125000} 
+              monthlyChange={3500} 
+              className="card-hover relative z-10"
+            />
+          </div>
+          <div className="relative">
+            <div className="absolute -top-2 -left-2 w-4 h-4 bg-secondary rounded-full opacity-20"></div>
+            <FinancialHealthCard 
+              score={85} 
+              metrics={mockHealthMetrics}
+              debtAmount={15000}
+              creditScore={750}
+              className="card-hover relative z-10"
+            />
+          </div>
+          <div className="relative">
+            <div className="absolute -top-2 -left-2 w-4 h-4 bg-accent rounded-full opacity-20"></div>
+            <BudgetCard 
+              budget={{
+                necessities: 50,
+                wants: 30,
+                savings: 20
+              }}
+              monthlyIncome={8500}
+              className="card-hover relative z-10"
+            />
+          </div>
         </div>
 
         {/* Advanced Charts Section */}
-        <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList>
-            <TabsTrigger value="overview" className="flex items-center gap-2">
-              <PieChart className="h-4 w-4" />
-              Overview
-            </TabsTrigger>
-            <TabsTrigger value="performance" className="flex items-center gap-2">
-              <LineChart className="h-4 w-4" />
-              Performance
-            </TabsTrigger>
-            <TabsTrigger value="expenses" className="flex items-center gap-2">
-              <BarChart3 className="h-4 w-4" />
-              Expenses
-            </TabsTrigger>
-            <TabsTrigger value="market" className="flex items-center gap-2">
-              <TrendingUp className="h-4 w-4" />
-              Market
-            </TabsTrigger>
-          </TabsList>
+        <div className="bg-card/30 rounded-lg p-6">
+          <Tabs defaultValue="overview" className="space-y-6">
+            <TabsList className="glass-card p-1 w-full md:w-auto">
+              <TabsTrigger 
+                value="overview" 
+                className="flex items-center gap-2 button-hover data-[state=active]:bg-primary/10"
+              >
+                <PieChart className="h-4 w-4" />
+                Overview
+              </TabsTrigger>
+              <TabsTrigger 
+                value="performance" 
+                className="flex items-center gap-2 button-hover data-[state=active]:bg-primary/10"
+              >
+                <LineChart className="h-4 w-4" />
+                Performance
+              </TabsTrigger>
+              <TabsTrigger 
+                value="expenses" 
+                className="flex items-center gap-2 button-hover data-[state=active]:bg-primary/10"
+              >
+                <BarChart3 className="h-4 w-4" />
+                Expenses
+              </TabsTrigger>
+              <TabsTrigger 
+                value="market" 
+                className="flex items-center gap-2 button-hover data-[state=active]:bg-primary/10"
+              >
+                <TrendingUp className="h-4 w-4" />
+                Market
+              </TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="overview" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <PortfolioAllocationCard allocations={portfolioAllocations} />
-              <AdvancedCharts />
-            </div>
-          </TabsContent>
+            <TabsContent value="overview" className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <PortfolioAllocationCard 
+                  allocations={portfolioAllocations} 
+                  className="card-hover"
+                />
+                <AdvancedCharts className="card-hover" />
+              </div>
+            </TabsContent>
 
-          <TabsContent value="performance">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <GoalsProgressCard 
-                goals={[
-                  {
-                    id: "1",
-                    title: "Emergency Fund",
-                    type: "EmergencyFund",
-                    targetAmount: 25000,
-                    currentAmount: 15000,
-                    timeHorizon: "ShortTerm",
-                    targetDate: new Date("2024-12-31")
-                  },
-                  {
-                    id: "2",
-                    title: "House Down Payment",
-                    type: "HomePurchase",
-                    targetAmount: 60000,
-                    currentAmount: 20000,
-                    timeHorizon: "MediumTerm",
-                    targetDate: new Date("2025-06-30")
-                  }
-                ]} 
-              />
-              <ExpensesBreakdownCard 
-                expenses={mockExpenses}
-                totalExpenses={4000}
-              />
-            </div>
-          </TabsContent>
+            <TabsContent value="performance">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <GoalsProgressCard 
+                  goals={[
+                    {
+                      id: "1",
+                      title: "Emergency Fund",
+                      type: "EmergencyFund",
+                      targetAmount: 25000,
+                      currentAmount: 15000,
+                      timeHorizon: "ShortTerm",
+                      targetDate: new Date("2024-12-31")
+                    },
+                    {
+                      id: "2",
+                      title: "House Down Payment",
+                      type: "HomePurchase",
+                      targetAmount: 60000,
+                      currentAmount: 20000,
+                      timeHorizon: "MediumTerm",
+                      targetDate: new Date("2025-06-30")
+                    }
+                  ]} 
+                  className="card-hover"
+                />
+                <ExpensesBreakdownCard 
+                  expenses={mockExpenses}
+                  totalExpenses={4000}
+                  className="card-hover"
+                />
+              </div>
+            </TabsContent>
 
-          <TabsContent value="expenses">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <ExpensesBreakdownCard 
-                expenses={mockExpenses}
-                totalExpenses={4000}
-              />
-              <BudgetCard 
-                budget={{
-                  necessities: 50,
-                  wants: 30,
-                  savings: 20
-                }}
-                monthlyIncome={8500}
-              />
-            </div>
-          </TabsContent>
+            <TabsContent value="expenses">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <ExpensesBreakdownCard 
+                  expenses={mockExpenses}
+                  totalExpenses={4000}
+                  className="card-hover"
+                />
+                <BudgetCard 
+                  budget={{
+                    necessities: 50,
+                    wants: 30,
+                    savings: 20
+                  }}
+                  monthlyIncome={8500}
+                  className="card-hover"
+                />
+              </div>
+            </TabsContent>
 
-          <TabsContent value="market">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <StockMarketIndicesCard 
-                indices={[
-                  {
-                    name: "S&P 500",
-                    symbol: "SPX",
-                    value: 4850,
-                    change: 25.5,
-                    changePercent: 0.53
-                  },
-                  {
-                    name: "Dow Jones",
-                    symbol: "DJI",
-                    value: 38750,
-                    change: 155.2,
-                    changePercent: 0.40
-                  },
-                  {
-                    name: "NASDAQ",
-                    symbol: "IXIC",
-                    value: 15320,
-                    change: -45.8,
-                    changePercent: -0.30
-                  }
-                ]} 
-              />
-              <AdvancedCharts />
-            </div>
-          </TabsContent>
-        </Tabs>
+            <TabsContent value="market">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <StockMarketIndicesCard 
+                  indices={[
+                    {
+                      name: "S&P 500",
+                      symbol: "SPX",
+                      value: 4850,
+                      change: 25.5,
+                      changePercent: 0.53
+                    },
+                    {
+                      name: "Dow Jones",
+                      symbol: "DJI",
+                      value: 38750,
+                      change: 155.2,
+                      changePercent: 0.40
+                    },
+                    {
+                      name: "NASDAQ",
+                      symbol: "IXIC",
+                      value: 15320,
+                      change: -45.8,
+                      changePercent: -0.30
+                    }
+                  ]} 
+                  className="card-hover"
+                />
+                <AdvancedCharts className="card-hover" />
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
       </main>
       
       {/* AI Chatbot Button */}
-      <ChatbotButton />
+      <div className="fixed bottom-6 right-6">
+        <ChatbotButton className="button-hover" />
+      </div>
     </div>
   );
 }
