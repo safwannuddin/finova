@@ -1,4 +1,7 @@
+'use client';
+
 import { SignIn } from "@clerk/nextjs";
+import { dark } from '@clerk/themes';
 
 export default function SignInPage() {
   return (
@@ -12,12 +15,14 @@ export default function SignInPage() {
         </div>
         <SignIn
           appearance={{
+            baseTheme: dark,
             elements: {
               card: "bg-card shadow-md border border-border",
               formButtonPrimary: "bg-primary hover:bg-primary/90",
             },
           }}
           afterSignInUrl="/dashboard"
+          redirectUrl="/dashboard"
         />
       </div>
     </div>

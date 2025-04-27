@@ -1,11 +1,14 @@
 'use client';
 
 import { ClerkProvider as ClerkProviderBase } from '@clerk/nextjs';
+import { dark } from '@clerk/themes';
+import { ReactNode } from 'react';
 
-export function ClerkProvider({ children }: { children: React.ReactNode }) {
+export function ClerkProvider({ children }: { children: ReactNode }) {
   return (
     <ClerkProviderBase
       appearance={{
+        baseTheme: dark,
         variables: {
           colorPrimary: 'hsl(217, 91%, 60%)',
           colorBackground: 'hsl(222, 47%, 11%)',
